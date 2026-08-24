@@ -23,6 +23,7 @@
     "CI",
     "CLOUDFLARE_API_TOKEN",
     "CLOUDFLARE_ACCOUNT_ID",
+    "NEON_API_KEY",
 
     "npm_lifecycle_event"
   ]

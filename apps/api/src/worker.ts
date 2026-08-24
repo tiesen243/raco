@@ -6,12 +6,12 @@ import { bootstrap } from '@/bootstrap'
 
 export default Cloudflare.Worker(
   'api',
-  { main: import.meta.url, dev: { port: 3000 } },
+  { main: import.meta.url },
   Effect.gen(function* () {
     return {
       fetch: yield* HttpRouter.toHttpEffect(
         bootstrap()
       ) as Effect.Effect<never>,
     }
-  })
+  }).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding))
 )
