@@ -17,5 +17,13 @@
     }
   },
   "globalEnv": [],
-  "globalPassThroughEnv": ["NODE_ENV", "CI", "npm_lifecycle_event"]
+  "globalPassThroughEnv": [
+    "NODE_ENV",
+
+    "CI",
+    "CLOUDFLARE_API_TOKEN",
+    "CLOUDFLARE_ACCOUNT_ID",
+
+    "npm_lifecycle_event"
+  ]
 }
