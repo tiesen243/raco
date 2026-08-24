@@ -34,7 +34,7 @@ jobs:
       - uses: ./.github/setup
 
       - name: Deploy
-        run: bun run deploy -- -- --stage ${{ env.STAGE }}
+        run: bun run deploy -- -- --stage ${{ env.STAGE }} --yes
         env:
           PULL_REQUEST: ${{ github.event.number }}
           GITHUB_SHA: ${{ github.sha }}
@@ -60,7 +60,7 @@ jobs:
           exit 1
           fi
       - name: Destroy Preview Environment
-        run: bun run destroy -- -- --stage ${{ env.STAGE }}
+        run: bun run destroy -- -- --stage ${{ env.STAGE }} --yes
         env:
           PULL_REQUEST: ${{ github.event.number }}
 
