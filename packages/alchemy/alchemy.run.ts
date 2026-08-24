@@ -29,7 +29,7 @@ export default Alchemy.Stack(
     })
 
     if (github?.pr)
-      yield* GitHub.Comment('preview', {
+      yield* GitHub.Comment('pr-comment', {
         owner: github.owner,
         repository: github.repository,
         issueNumber: github.pr,
