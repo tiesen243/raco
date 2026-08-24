@@ -11,18 +11,21 @@
   },
   "scripts": {
     "build": "tsdown",
-    "dev": "bun run --hot src/server.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@effect/platform-bun": "catalog:effect",
+    "@effect/sql-pg": "catalog:effect",
     "@raco/contract": "workspace:*",
     "alchemy": "catalog:prod",
-    "effect": "catalog:effect"
+    "drizzle-orm": "^1.0.0-rc.5-ab785fc",
+    "effect": "catalog:effect",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@raco/tsconfig": "workspace:*",
     "@types/bun": "catalog:dev",
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc",
     "tsdown": "catalog:dev",
     "typescript": "catalog:dev"
   }

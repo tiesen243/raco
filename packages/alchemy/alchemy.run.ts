@@ -1,7 +1,9 @@
 import Api from '@raco/api'
 import * as Alchemy from 'alchemy'
 import * as Cloudflare from 'alchemy/Cloudflare'
+import * as Drizzle from 'alchemy/Drizzle'
 import * as GitHub from 'alchemy/GitHub'
+import * as Neon from 'alchemy/Neon'
 import * as Output from 'alchemy/Output'
 import * as Effect from 'effect/Effect'
 import * as Layer from 'effect/Layer'
@@ -9,7 +11,12 @@ import * as Layer from 'effect/Layer'
 export default Alchemy.Stack(
   'raco',
   {
-    providers: Layer.merge(Cloudflare.providers(), GitHub.providers()),
+    providers: Layer.mergeAll(
+      Cloudflare.providers(),
+      Neon.providers(),
+      Drizzle.providers(),
+      GitHub.providers()
+    ),
     state: Cloudflare.state(),
   },
   Effect.gen(function* () {
