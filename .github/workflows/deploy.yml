@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  STAGE: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || (github.ref == 'refs/heads/main' && 'prod' || github.ref_name) }}
+
+  FORCE_COLOR: 3
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+jobs:
+  deploy:
+    if: ${{ github.event.action != 'closed' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: .github/setup
+
+      - name: Deploy
+        run: bun run deploy -- -- --stage ${{ env.STAGE }}
+        env:
+          PULL_REQUEST: ${{ github.event.number }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+  cleanup:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }}
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: .github/setup
+
+      - name: Safety Check
+        run: |-
+          if [ "${{ env.STAGE }}" = "prod" ]; then
+          echo "ERROR: Cannot destroy prod environment in cleanup job"
+          exit 1
+          fi
+      - name: Destroy Preview Environment
+        run: bun run destroy -- -- --stage ${{ env.STAGE }}
+        env:
+          PULL_REQUEST: ${{ github.event.number }}
