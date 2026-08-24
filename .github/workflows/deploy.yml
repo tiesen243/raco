@@ -31,7 +31,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
-      - uses: .github/setup
+      - uses: ./.github/setup
 
       - name: Deploy
         run: bun run deploy -- -- --stage ${{ env.STAGE }}
@@ -48,7 +48,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-      - uses: .github/setup
+      - uses: ./.github/setup
 
       - name: Safety Check
         run: |-
