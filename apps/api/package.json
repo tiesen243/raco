@@ -1,0 +1,28 @@
+{
+  "name": "@raco/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/worker.d.mts",
+      "default": "./dist/worker.mjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@effect/platform-bun": "catalog:effect",
+    "@raco/contract": "workspace:*",
+    "alchemy": "catalog:prod",
+    "effect": "catalog:effect"
+  },
+  "devDependencies": {
+    "@raco/tsconfig": "workspace:*",
+    "@types/bun": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "typescript": "catalog:dev"
+  }
+}

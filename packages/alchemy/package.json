@@ -1,0 +1,18 @@
+{
+  "name": "@raco/alchemy",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "alchemy deploy",
+    "dev": "alchemy dev"
+  },
+  "dependencies": {
+    "@effect/platform-bun": "catalog:effect",
+    "@effect/platform-node": "catalog:effect",
+    "@raco/api": "workspace:*",
+    "@raco/web": "workspace:*",
+    "alchemy": "catalog:prod",
+    "effect": "catalog:effect"
+  }
+}

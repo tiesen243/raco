@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".cache/tsbuildinfo.json", "dist/**", "build/**"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "dev": {
+      "persistent": true
+    },
+    "typecheck": {
+      "outputs": [".cache/tsbuildinfo.json"]
+    }
+  },
+  "globalEnv": [],
+  "globalPassThroughEnv": ["NODE_ENV", "CI", "npm_lifecycle_event"]
+}
