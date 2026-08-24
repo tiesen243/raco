@@ -6,6 +6,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "deploy": "turbo run deploy -F @raco/alchemy",
+    "destroy": "turbo run destroy -F @raco/alchemy",
     "dev": "turbo run dev -F @raco/alchemy",
     "format": "oxfmt --check",
     "format:fix": "oxfmt",

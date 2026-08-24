@@ -1,5 +1,4 @@
-import { Effect } from 'effect'
-import { Form, useNavigation } from 'react-router'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -19,48 +18,19 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { ApiClient } from '@/lib/api-client'
-import { runtime } from '@/lib/runtime'
+import { api } from '@/lib/runtime'
 
 import type { Route } from './+types/_index'
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
-  const { searchParams } = new URL(request.url)
+export default function IndexPage(_: Route.ComponentProps) {
+  const { data, error, isLoading, refetch } = useQuery(
+    api.post.list.queryOptions({ query: {} })
+  )
 
-  const program = Effect.gen(function* () {
-    const api = yield* ApiClient
-
-    const query = searchParams.get('query') ?? ''
-    return yield* api.post.list({ query: { query } })
+  const { mutate, isPending } = useMutation({
+    ...api.post.create.mutationOptions(),
+    onSuccess: () => refetch(),
   })
-
-  const response = await runtime.runPromise(program)
-  return response.data
-}
-
-export const action = async ({ request }: Route.ActionArgs) => {
-  const formData = await request.formData()
-
-  const program = Effect.gen(function* () {
-    const api = yield* ApiClient
-
-    return yield* api.post.create({
-      payload: {
-        title: formData.get('title') as string,
-        content: formData.get('content') as string,
-      },
-    })
-  })
-
-  const response = await runtime.runPromise(program)
-  return response.data
-}
-
-export default function IndexPage({ loaderData }: Route.ComponentProps) {
-  const navigation = useNavigation()
-  const isSubmitting = navigation.state === 'submitting'
-
-  const posts = loaderData ?? []
 
   return (
     <main className='container mx-auto max-w-6xl p-4 md:p-8 space-y-8'>
@@ -74,10 +44,21 @@ export default function IndexPage({ loaderData }: Route.ComponentProps) {
       <section className='grid grid-cols-1 lg:grid-cols-12 gap-8 items-start'>
         <h2 className='sr-only'>Post section</h2>
 
-        <Form method='post' className='lg:col-span-5'>
+        <form
+          className='lg:col-span-5'
+          onSubmit={(e) => {
+            e.preventDefault()
+            const formData = new FormData(e.currentTarget)
+
+            mutate({
+              title: formData.get('title') as string,
+              content: formData.get('content') as string,
+            })
+          }}
+        >
           <h3 className='sr-only'>Create Post section</h3>
 
-          <FieldSet disabled={isSubmitting}>
+          <FieldSet disabled={isPending}>
             <FieldLegend>Create New Post</FieldLegend>
             <FieldDescription>
               Fill out the title and content below to publish a new post.
@@ -106,23 +87,23 @@ export default function IndexPage({ loaderData }: Route.ComponentProps) {
               </Field>
 
               <Field>
-                <Button type='submit' disabled={isSubmitting}>
-                  {isSubmitting ? 'Publishing...' : 'Create Post'}
+                <Button type='submit'>
+                  {isPending ? 'Publishing...' : 'Create Post'}
                 </Button>
               </Field>
             </FieldGroup>
           </FieldSet>
-        </Form>
+        </form>
 
         <section className='lg:col-span-7 grid gap-4 list-none p-0'>
           <h3 className='sr-only'>Post List section</h3>
 
-          {posts.length === 0 ? (
+          {isLoading || data?.data.length === 0 ? (
             <Card className='p-8 text-center text-muted-foreground'>
               No posts found. Be the first to create one!
             </Card>
           ) : (
-            posts.map((post) => (
+            data?.data.map((post) => (
               <Card key={post.id}>
                 <CardHeader>
                   <CardTitle>{post.title}</CardTitle>
@@ -133,6 +114,11 @@ export default function IndexPage({ loaderData }: Route.ComponentProps) {
                 </CardContent>
               </Card>
             ))
+          )}
+          {error && (
+            <pre className='text-destructive'>
+              {JSON.stringify(error, null, 2)}
+            </pre>
           )}
         </section>
       </section>

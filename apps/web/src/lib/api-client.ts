@@ -19,8 +19,7 @@ export class ApiClient extends Context.Service<
             HttpClientRequest.prependUrl(import.meta.env.VITE_API_URL ?? ''),
             HttpClientRequest.acceptJson
           )
-        ),
-        HttpClient.filterStatusOk
+        )
       ),
   }),
 }) {

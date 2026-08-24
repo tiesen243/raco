@@ -1,6 +1,8 @@
 import * as BunHttpPlatform from '@effect/platform-bun/BunHttpPlatform'
+import * as BunServices from '@effect/platform-bun/BunServices'
 import { Api } from '@raco/contract'
 import * as Layer from 'effect/Layer'
+import * as Etag from 'effect/unstable/http/Etag'
 import * as HttpRouter from 'effect/unstable/http/HttpRouter'
 import * as HttpApiBuilder from 'effect/unstable/httpapi/HttpApiBuilder'
 import * as HttpApiScalar from 'effect/unstable/httpapi/HttpApiScalar'
@@ -28,12 +30,13 @@ export function bootstrap() {
   )
 
   return Layer.merge(apiLive, docsLive).pipe(
-    Layer.provide(BunHttpPlatform.layer),
+    Layer.provide([BunHttpPlatform.layer, BunServices.layer, Etag.layer]),
+
     Layer.provide(
       HttpRouter.cors({
         allowedOrigins: ['*'],
-        allowedMethods: ['GET', 'POST', 'OPTIONS'],
-        allowedHeaders: ['Content-Type'],
+        allowedMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'b3', 'traceparent'],
       })
     )
   )

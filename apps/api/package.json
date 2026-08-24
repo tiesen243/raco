@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "tsdown",
+    "dev": "bun run --hot src/server.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
