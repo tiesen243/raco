@@ -4,12 +4,10 @@
   "tasks": {
     "deploy": {
       "dependsOn": ["^build"],
-      "interactive": true,
       "cache": false
     },
     "destroy": {
       "dependsOn": ["^build"],
-      "interactive": true,
       "cache": false
     },
     "dev": {
